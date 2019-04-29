@@ -27,7 +27,7 @@ class Plotter(object):
             else:
                 self.df['ma'] = self.df['Close'].rolling(window=day, min_periods=0).mean()
                 ax1.plot(self.df.index, self.df['ma'])
-#        plt.suptitle(plottitle,fontsize=16)
+        plt.suptitle(plottitle,fontsize=16)
         plt.show()
 
     def candlestickplotter(self, sampledays='10D', plottitle=None):
@@ -46,6 +46,5 @@ class Plotter(object):
 
         candlestick_ohlc(ax1, df_ohlc.values, width=5, colorup='g')
         ax2.fill_between(df_volume.index.map(mdates.date2num), df_volume.values, 0)
-#        plt.suptitle(plottitle,fontsize=16)
+        plt.suptitle(plottitle,fontsize=16)
         plt.show()
-
