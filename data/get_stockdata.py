@@ -28,15 +28,17 @@ def get_singlestockdata(source, stockinput, idx='no_index', dates=[None, None], 
         df.rename(columns={'Last':'Close'}, inplace=True)
     elif source == 'quandl':
         if update_stockdata:
+            print('Downloading {} from {}'.format(stockinput[1], idx))
             df = quandl.get(stockinput[0]+stockinput[1], start_date=dates[0], end_date=dates[1], authtoken="ruJzH3a2GZ3PHtneDSoZ", paginate=True)
             df.rename(columns={'Last':'Close'}, inplace=True)
         else:
             if not os.path.exists('data/stock_data/{}/{}.csv'.format(idx, stockinput[1])):
+                print('Downloading {} from {}'.format(stockinput[1], idx))
                 df = quandl.get(stockinput[0]+stockinput[1], start_date=dates[0], end_date=dates[1], authtoken="ruJzH3a2GZ3PHtneDSoZ", paginate=True)
                 df.rename(columns={'Last':'Close'}, inplace=True)
             else:
                 df = None
-                print('Already have {} from {}'.format(stockinput[1], idx))
+                print('Already downloaded {} from {}'.format(stockinput[1], idx))
     else:
         raise ValueError('This source is not an option')
 
