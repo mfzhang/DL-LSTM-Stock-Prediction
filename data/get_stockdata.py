@@ -6,7 +6,7 @@ import pickle
 import datetime as dt
 import pandas as pd
 import quandl
-import get_tickers as gt
+import data.get_tickers as gt
 
 def get_singlestockdata(source, stockinput, idx='no_index', dates=[None, None], update_stockdata=False):
     '''Definition which returns single stock data
@@ -24,14 +24,14 @@ def get_singlestockdata(source, stockinput, idx='no_index', dates=[None, None], 
         ValueError: if source is not csv or quandl
     '''
     if source == 'csv':
-        df = pd.read_csv('stock_data/'+idx+'/'+stockinput[1]+'.csv', parse_dates=True, index_col=0)
+        df = pd.read_csv('data/stock_data/'+idx+'/'+stockinput[1]+'.csv', parse_dates=True, index_col=0)
         df.rename(columns={'Last':'Close'}, inplace=True)
     elif source == 'quandl':
         if update_stockdata:
             df = quandl.get(stockinput[0]+stockinput[1], start_date=dates[0], end_date=dates[1], authtoken="ruJzH3a2GZ3PHtneDSoZ", paginate=True)
             df.rename(columns={'Last':'Close'}, inplace=True)
         else:
-            if not os.path.exists('stock_data/{}/{}.csv'.format(idx, stockinput[1])):
+            if not os.path.exists('data/stock_data/{}/{}.csv'.format(idx, stockinput[1])):
                 df = quandl.get(stockinput[0]+stockinput[1], start_date=dates[0], end_date=dates[1], authtoken="ruJzH3a2GZ3PHtneDSoZ", paginate=True)
                 df.rename(columns={'Last':'Close'}, inplace=True)
             else:
@@ -54,10 +54,10 @@ def save_singlestockdata(df, ticker, idx='no_index'):
     '''
     df.rename(columns={'Adj Close':ticker}, inplace=True)
 
-    if not os.path.exists('stock_data/{}'.format(idx)):
-        os.makedirs('stock_data/{}'.format(idx))
+    if not os.path.exists('data/stock_data/{}'.format(idx)):
+        os.makedirs('data/stock_data/{}'.format(idx))
 
-    df.to_csv('stock_data/{}/{}.csv'.format(idx, ticker))
+    df.to_csv('data/stock_data/{}/{}.csv'.format(idx, ticker))
 
 def getandsave_idxstockdata(idx, dates=[None, None], reload_tickers=False, update_stockdata=False):
     '''Definition which gets all stock data of a certain index
