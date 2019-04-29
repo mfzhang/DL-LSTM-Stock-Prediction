@@ -6,9 +6,9 @@ The purpose of this project is to predict stock market values based on a Long Sh
 - Several packages
 
 ## Purpose of the project
-- Get new insights into deep learning
+- Get new insights into deep learning.
 
 ## Credits
 - This project is based on a tutorial of [Thushan Ganegedara](https://www.datacamp.com/community/tutorials/lstm-python-stock-market).
 - Some elements of the www.pythonprogramming.net finance [tutorial](https://pythonprogramming.net/getting-stock-prices-python-programming-for-finance/) are also used.
-- Team members: Daan Cuppen, Jeff Maes, Isaac Seminck, Benjamin De Bosscher and Kipras Paliušis
+- Team members: Daan Cuppen, Jeff Maes, Isaac Seminck, Benjamin De Bosscher and Kipras Paliušis.
