@@ -3,7 +3,7 @@ The purpose of this project is to predict stock market values based on a Long Sh
 
 ## Requirements
 - Python 3
-- Packages
+- Several packages
 
 ## Purpose of the project
 - Get new insights into deep learning
