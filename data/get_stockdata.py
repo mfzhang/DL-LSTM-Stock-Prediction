@@ -54,12 +54,13 @@ def save_singlestockdata(df, ticker, idx='no_index'):
     Returns:
         None
     '''
-    df.rename(columns={'Adj Close':ticker}, inplace=True)
-
-    if not os.path.exists('data/stock_data/{}'.format(idx)):
-        os.makedirs('data/stock_data/{}'.format(idx))
-
-    df.to_csv('data/stock_data/{}/{}.csv'.format(idx, ticker))
+#    df.rename(columns={'Adj Close':ticker}, inplace=True)
+#
+#    if not os.path.exists('data/stock_data/{}'.format(idx)):
+#        os.makedirs('data/stock_data/{}'.format(idx))
+#
+#    df.to_csv('data/stock_data/{}/{}.csv'.format(idx, ticker))
+    raise ValueError('Already downloaded {} from {}'.format(ticker, idx))
 
 def getandsave_idxstockdata(idx, dates=[None, None], reload_tickers=False, update_stockdata=False):
     '''Definition which gets all stock data of a certain index
