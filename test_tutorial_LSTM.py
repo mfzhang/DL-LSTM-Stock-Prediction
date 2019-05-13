@@ -13,7 +13,7 @@ from sklearn.preprocessing import MinMaxScaler
 plot_stock = 0      # 0: no plot, 1: plot
 
 ##################################################### Getting data
-df = pd.read_csv(os.path.join('data/stock_data/AEX/AALB.csv'),delimiter=',',usecols=['Date','Open','High','Low','Close'])
+df = pd.read_csv(os.path.join('data/stock_data/AEX/AKZA.csv'),delimiter=',',usecols=['Date','Open','High','Low','Close'])
 print('Loaded data from the AEX repository')
     
 ############################################################### data exploration
