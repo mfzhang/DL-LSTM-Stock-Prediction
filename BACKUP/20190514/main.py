@@ -7,15 +7,6 @@
         Based on a tutorial of Thushan Ganegedara (https://www.datacamp.com/community/tutorials/lstm-python-stock-market)
 '''
 
-from pandas_datareader import data
-import matplotlib.pyplot as plt
-import pandas as pd
-import datetime as dt
-import urllib.request, json
-import os
-import numpy as np
-import tensorflow as tf
-from sklearn.preprocessing import MinMaxScaler
 from src.data_operations.import_as_dict import get_data
 from src.data_operations.preprocessing import PreProc
 from src.LSTM import LSTM
@@ -36,9 +27,8 @@ df = stocks['PHIA']
 # Preprocessing data
 split_datapoint = 5000
 smoothing_window_size = 1000
-scaler = MinMaxScaler()
 
-pp_data = PreProc(df, scaler)
+pp_data = PreProc(df)
 pp_data.splitdata(split_datapoint)
 pp_data.normalize_smooth(smoothing_window_size, EMA=0.0, gamma=0.1)
 

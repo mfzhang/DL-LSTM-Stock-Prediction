@@ -5,17 +5,18 @@
 '''
 
 import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 
 class PreProc(object):
     '''Preprocessing object
             TO BE COMPLETED
     '''
-    def __init__(self, df, scaler):
+    def __init__(self, df):
         self.df = df
         self.high_prices = df.loc[:, 'High'].values
         self.low_prices = df.loc[:, 'Low'].values
         self.mid_prices = (self.high_prices+self.low_prices)/2.0
-        self.scaler = scaler
+        self.scaler = MinMaxScaler()
         self.train_data = 0
         self.test_data = 0
         self.all_mid_data = 0
