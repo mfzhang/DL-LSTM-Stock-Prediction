@@ -37,7 +37,7 @@ low_prices = df.loc[:,'Low'].as_matrix()
 mid_prices = (high_prices+low_prices)/2
 
 train_data = mid_prices[:11000]                 # first 11,000 data points
-test_data = mid_prices[11000:]                  # the rest will be test d
+test_data = mid_prices[11000:]                  # the rest will be test data
 
 ############################################################### normalisation
 # Scale the data to be between 0 and 1
