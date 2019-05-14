@@ -28,30 +28,33 @@ df = stocks['PHIA']
 split_datapoint = 5000
 smoothing_window_size = 1000
 
-for col_name in ['Prices']:
+parameters_lst = ['Prices', 'Volume']
+frame = np.zeros((500,2))
+
+for col_name in ['Prices', 'Volume']:
     pp_data = PreProc(df, col_name)
     pp_data.splitdata(split_datapoint)
-
+    pp_data.normalize_smooth(smoothing_window_size, EMA=0.0, gamma=0.1)
     
 # =============================================================================
 # Define and apply LSTM
 # =============================================================================
 
 # Define hyperparameters
-D = 2                           # Dimensionality of the data. Since our data is 1-D this would be 1
+D = 1                           # Dimensionality of the data. Since our data is 1-D this would be 1
 num_unrollings = 50             # Number of time steps you look into the future.
 batch_size = 500                # Number of samples in a batch
 num_nodes = [200, 200, 150]     # Number of hidden nodes in each layer of the deep LSTM stack we're using
 n_layers = len(num_nodes)       # number of layers
 dropout = 0.2                   # Dropout amount
 
-# Run LSTM
-x_axis_seq, predictions_over_time = LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout)
-
-# =============================================================================
-# Visualisation of the results
-# =============================================================================
-
-# Visualisation
-best_prediction_epoch = 28      # Replace this with the epoch that you got the best results when running the plotting code
-prediction(df, pp_data, x_axis_seq, predictions_over_time, best_prediction_epoch)
+## Run LSTM
+#x_axis_seq, predictions_over_time = LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout)
+#
+## =============================================================================
+## Visualisation of the results
+## =============================================================================
+#
+## Visualisation
+#best_prediction_epoch = 28      # Replace this with the epoch that you got the best results when running the plotting code
+#prediction(df, pp_data, x_axis_seq, predictions_over_time, best_prediction_epoch)
