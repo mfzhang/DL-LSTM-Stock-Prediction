@@ -6,7 +6,7 @@
                     Kipras Paliušis
         Based on a tutorial of Thushan Ganegedara (https://www.datacamp.com/community/tutorials/lstm-python-stock-market)
 '''
-
+#huts
 from src.data_operations.import_as_dict import get_data
 from src.data_operations.preprocessing import PreProc
 from src.LSTM import LSTM
