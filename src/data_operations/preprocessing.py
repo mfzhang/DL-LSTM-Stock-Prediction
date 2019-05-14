@@ -11,23 +11,28 @@ class PreProc(object):
     '''Preprocessing object
             TO BE COMPLETED
     '''
-    def __init__(self, df):
+    def __init__(self, df, col_name):
         self.df = df
-        self.high_prices = df.loc[:, 'High'].values
-        self.low_prices = df.loc[:, 'Low'].values
-        self.mid_prices = (self.high_prices+self.low_prices)/2.0
         self.scaler = MinMaxScaler()
         self.train_data = 0
         self.test_data = 0
         self.all_mid_data = 0
         self.split_datapoint = 0
+        
+        if col_name == 'Prices':
+            self.high_prices = df.loc[:, 'High'].values
+            self.low_prices = df.loc[:, 'Low'].values
+            self.col_name = (self.high_prices+self.low_prices)/2.0
+            
+        elif col_name == 'Volume':
+            self.col_name = df.loc[:, 'Volume'].values
 
     def splitdata(self, split_datapoint):
         '''Method which splits test data and train data
         '''
         self.split_datapoint = split_datapoint
-        self.train_data = self.mid_prices[:split_datapoint].reshape(-1, 1)
-        self.test_data = self.mid_prices[split_datapoint:].reshape(-1, 1)
+        self.train_data = self.col_name[:split_datapoint].reshape(-1, 1)
+        self.test_data = self.col_name[split_datapoint:].reshape(-1, 1)
 
     def normalize_smooth(self, smoothing_window_size, EMA=0.0, gamma=0.1):
         '''Normalizes and smooths training data (and test data)

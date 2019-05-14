@@ -28,16 +28,17 @@ df = stocks['PHIA']
 split_datapoint = 5000
 smoothing_window_size = 1000
 
-pp_data = PreProc(df)
-pp_data.splitdata(split_datapoint)
-pp_data.normalize_smooth(smoothing_window_size, EMA=0.0, gamma=0.1)
+for col_name in ['Prices']:
+    pp_data = PreProc(df, col_name)
+    pp_data.splitdata(split_datapoint)
 
+    
 # =============================================================================
 # Define and apply LSTM
 # =============================================================================
 
 # Define hyperparameters
-D = 1                           # Dimensionality of the data. Since our data is 1-D this would be 1
+D = 2                           # Dimensionality of the data. Since our data is 1-D this would be 1
 num_unrollings = 50             # Number of time steps you look into the future.
 batch_size = 500                # Number of samples in a batch
 num_nodes = [200, 200, 150]     # Number of hidden nodes in each layer of the deep LSTM stack we're using
