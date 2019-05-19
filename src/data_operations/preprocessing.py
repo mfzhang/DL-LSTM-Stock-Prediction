@@ -20,15 +20,22 @@ class PreProc(object):
         self.train_data = 0
         self.test_data = 0
         self.all_mid_data = 0
+        self.remove_data = 0
         self.split_datapoint = 0
-
+		
     def splitdata(self, split_datapoint):
         '''Method which splits test data and train data
         '''
         self.split_datapoint = split_datapoint
         self.train_data = self.mid_prices[:split_datapoint].reshape(-1, 1)
         self.test_data = self.mid_prices[split_datapoint:].reshape(-1, 1)
-
+		
+    def limitdata(self, remove_data):
+        ''' Method which reduces the training data size from the start of the sequence
+        '''
+        self.remove_data = remove_data
+        self.train_data = self.train_data[remove_data:]
+		
     def normalize_smooth(self, smoothing_window_size, EMA=0.0, gamma=0.1):
         '''Normalizes and smooths training data (and test data)
         '''
@@ -54,6 +61,7 @@ class PreProc(object):
         for ti in range(self.split_datapoint):
             EMA = gamma*self.train_data[ti] + (1-gamma)*EMA
             self.train_data[ti] = EMA
+
 
             # Used for visualization and test purposes
             self.all_mid_data = np.concatenate([self.train_data, self.test_data], axis=0)

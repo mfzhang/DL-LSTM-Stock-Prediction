@@ -5,11 +5,14 @@
 import tensorflow as tf
 import numpy as np
 from src.data_operations.augmentation import DataGeneratorSeq
-
-def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
+def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n_predict_once):
     '''LSTM definition
             TO BE COMPLETED
     '''
+# =============================================================================
+# 	### Result per epoch output placeholder ### 
+# =============================================================================
+	
     tf.reset_default_graph() # This is important in case you run this multiple times
 
     # Input data.
@@ -119,9 +122,10 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
     print('\tAll done')
 
     epochs = 30
+	
     valid_summary = 1 # Interval you make test predictions
 
-    n_predict_once = 50 # Number of steps you continously predict for
+#    n_predict_once = 50 # Number of steps you continously predict for
 
     train_seq_length = pp_data.train_data.size # Full length of the training data
 
@@ -146,10 +150,19 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
     x_axis_seq = []
 
     # Points you start our test predictions from
-    test_points_seq = np.arange(pp_data.split_datapoint, pp_data.all_mid_data.size-pp_data.all_mid_data.size%50, 50).tolist()    ############## np.arange(11000,12000,50).tolist()  CORRECT???
-
+# =============================================================================
+# 	CHANGES ADDED TO REMOVE HARDCODING AND TO MAKE n_predict_once adjustable!
+# =============================================================================
+    test_points_seq = np.arange(pp_data.split_datapoint, pp_data.all_mid_data.size-pp_data.all_mid_data.size%n_predict_once, n_predict_once).tolist()    ############## np.arange(11000,12000,50).tolist()  CORRECT???
+	
+			### Making a data saving array
+    data_for_output_perm = np.array(('')) # Used to store the data for all the epochs
+    data_for_output_temp = '' # Used to store the temp data at each epoch
     for ep in range(epochs):
-
+# =============================================================================
+# 		### Saving the epoch number
+# =============================================================================
+        data_for_output_temp = 'Epoch nr ' + str(ep+1)
         # ========================= Training =====================================
         for step in range(train_seq_length//batch_size):
 
@@ -174,6 +187,10 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
           # The average loss
           if (ep+1)%valid_summary == 0:
             print('Average loss at step %d: %f' % (ep+1, average_loss))
+# =============================================================================
+# 			### Saving the average loss
+# =============================================================================
+            data_for_output_temp = data_for_output_temp + ', average loss= ' +  str(average_loss)[:7]
 
           train_mse_ot.append(average_loss)
 
@@ -246,7 +263,13 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
 
           test_mse_ot.append(current_test_mse)
           print('\tTest MSE: %.5f'%np.mean(mse_test_loss_seq))
+# =============================================================================
+#           ### Saving the MSE
+# =============================================================================
+          data_for_output_temp = data_for_output_temp + ', MSE= ' + str(np.mean(mse_test_loss_seq))[:7]
+#          print(data_for_output_temp)
           predictions_over_time.append(predictions_seq)
           print('\tFinished Predictions')
-
-    return x_axis_seq, predictions_over_time
+          data_for_output_perm = np.vstack((data_for_output_perm, data_for_output_temp))
+   
+    return x_axis_seq, predictions_over_time, data_for_output_perm
