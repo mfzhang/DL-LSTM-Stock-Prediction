@@ -55,9 +55,9 @@ dropout = 0.2                   # Dropout amount
 # Define number of days to predict for in the future
 #n_predict_once = 10
 #n_predict_once = 25
-#n_predict_once = 50
+n_predict_once = 50
 #n_predict_once = 100
-n_predict_once = 200
+#n_predict_once = 200
 # Run LSTM
 x_axis_seq, predictions_over_time, run_data = LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n_predict_once)
 
