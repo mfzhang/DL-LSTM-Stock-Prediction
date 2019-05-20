@@ -54,7 +54,7 @@ if remove_data!=0: # Removing data points! Or not! This if statement will know.
 # =============================================================================
 
 # Define hyperparameters
-D = 1                           # Dimensionality of the data. Since our data is 1-D this would be 1
+D = 2                           # Dimensionality of the data. Since our data is 1-D this would be 1
 num_unrollings = 50             # Number of time steps you look into the future. (also number of batches)
 batch_size = 500                # Number of samples in a batch
 num_nodes = [200, 200, 150]     # Number of hidden nodes in each layer of the deep LSTM stack we're using
@@ -74,8 +74,9 @@ x_axis_seq, predictions_over_time, run_data = LSTM(pp_data, D, num_unrollings, b
 # Saving the results and finding the best epoch
 # =============================================================================
 
-#best_prediction_epoch = 28      # Replace this with the epoch that you got the best results when running the plotting code
-best_prediction_epoch = PerformanceSaver(pp_data, run_data, n_predict_once, num_unrollings, batch_size)
+
+best_prediction_epoch = 28      # Replace this with the epoch that you got the best results when running the plotting code
+#best_prediction_epoch = PerformanceSaver(pp_data, run_data, n_predict_once, num_unrollings, batch_size)
 
 # =============================================================================
 # Visualisation of the results

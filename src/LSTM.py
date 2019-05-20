@@ -12,7 +12,7 @@ import tensorflow as tf
 import numpy as np
 from src.data_operations.augmentation import DataGeneratorSeq
 
-def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
+def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n_predict_once):
     '''LSTM definition
             TO BE COMPLETED
     '''
