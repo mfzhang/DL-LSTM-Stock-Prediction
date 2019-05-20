@@ -286,7 +286,6 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n
 
 
           test_mse_ot.append(current_test_mse)
-          print('\tTest MSE: %.5f'%np.mean(mse_test_loss_seq))
 
           data_for_output_temp = data_for_output_temp + ', MSE= ' + str(np.mean(mse_test_loss_seq))[:7]
           test_mse_ot.append(current_test_mse)
