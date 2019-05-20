@@ -7,10 +7,10 @@
         Based on a tutorial of Thushan Ganegedara (https://www.datacamp.com/community/tutorials/lstm-python-stock-market)
 '''
 
-from BACKUP.20190514.src.data_operations.import_as_dict import get_data
-from BACKUP.20190514.src.data_operations.preprocessing import PreProc
-from BACKUP.20190514.src.LSTM import LSTM
-from BACKUP.20190514.src.makeplots import prediction
+from data_operations_backup.import_as_dict_backup import get_data
+from data_operations_backup.preprocessing_backup import PreProc
+from LSTM_backup import LSTM
+from makeplots import prediction
 
 # =============================================================================
 # Preprocessing
@@ -52,5 +52,5 @@ x_axis_seq, predictions_over_time = LSTM(pp_data, D, num_unrollings, batch_size,
 # =============================================================================
 
 # Visualisation
-best_prediction_epoch = 28      # Replace this with the epoch that you got the best results when running the plotting code
+best_prediction_epoch = 0      # Replace this with the epoch that you got the best results when running the plotting code
 prediction(df, pp_data, x_axis_seq, predictions_over_time, best_prediction_epoch)

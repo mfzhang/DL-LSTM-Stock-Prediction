@@ -46,7 +46,7 @@ def candlestick(df, sampledays='10D', plottitle=None):
 def prediction(df, pp_data, x_axis_seq, predictions_over_time, best_prediction_epoch):
     plt.figure(figsize = (18,18))
     plt.subplot(2,1,1)
-    plt.plot(range(df.shape[0]),pp_data.all_mid_data,color='b')
+    plt.plot(range(df.shape[0]),pp_data[0].all_mid_data,color='b')
     
     # Plotting how the predictions change over time
     # Plot older predictions with low alpha and newer predictions with high alpha
@@ -59,18 +59,18 @@ def prediction(df, pp_data, x_axis_seq, predictions_over_time, best_prediction_e
     plt.title('Evolution of Test Predictions Over Time',fontsize=16)
     plt.xlabel('Date',fontsize=16)
     plt.ylabel('Mid Price',fontsize=16)
-    plt.xlim(left=pp_data.split_datapoint)
+    plt.xlim(left=pp_data[0].split_datapoint)
     
     plt.subplot(2,1,2)
     
     # Predicting the best test prediction you got
-    plt.plot(range(df.shape[0]),pp_data.all_mid_data,color='b')
+    plt.plot(range(df.shape[0]),pp_data[0].all_mid_data,color='b')
     for xval,yval in zip(x_axis_seq,predictions_over_time[best_prediction_epoch]):
         plt.plot(xval,yval,color='r')
         
     plt.title('Best Test Predictions Over Time',fontsize=16)
     plt.xlabel('Date',fontsize=16)
     plt.ylabel('Mid Price',fontsize=16)
-    plt.xlim(left=pp_data.split_datapoint)
+    plt.xlim(left=pp_data[0].split_datapoint)
     plt.show()
     plt.savefig('plots/last_prediction.pdf')

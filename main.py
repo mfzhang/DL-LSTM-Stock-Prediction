@@ -34,12 +34,21 @@ remove_data = 0
 #remove_data = 3000 
 #remove_data = 4000 
 
-pp_data = PreProc(df)
-pp_data.splitdata(split_datapoint)
-pp_data.normalize_smooth(smoothing_window_size, EMA=0.0, gamma=0.1)
+pp_data_price = PreProc(df, "Prices")
+pp_data_price.splitdata(split_datapoint)
+pp_data_price.normalize_smooth(smoothing_window_size, EMA=0.0, gamma=0.1)
+
+pp_data_volume = PreProc(df, "Volume")
+pp_data_volume.splitdata(split_datapoint)
+pp_data_volume.normalize_smooth(smoothing_window_size, EMA=0.0, gamma=0.1)
+
+pp_data = []
+pp_data.insert(0, pp_data_price)
+pp_data.insert(1, pp_data_volume)
 
 if remove_data!=0: # Removing data points! Or not! This if statement will know.
 	pp_data.limitdata(remove_data)
+
 # =============================================================================
 # Define and apply LSTM
 # =============================================================================
@@ -60,9 +69,6 @@ n_predict_once = 50
 #n_predict_once = 200
 # Run LSTM
 x_axis_seq, predictions_over_time, run_data = LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n_predict_once)
-
-
-
 
 # =============================================================================
 # Saving the results and finding the best epoch

@@ -4,7 +4,7 @@
 
 import tensorflow as tf
 import numpy as np
-from src.data_operations.augmentation import DataGeneratorSeq
+from data_operations_backup.augmentation_backup import DataGeneratorSeq
 
 def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
     '''LSTM definition
@@ -58,9 +58,10 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
     all_lstm_outputs = tf.reshape(all_lstm_outputs, [batch_size*num_unrollings, num_nodes[-1]])
 
     all_outputs = tf.nn.xw_plus_b(all_lstm_outputs, w, b)
-
+    
     split_outputs = tf.split(all_outputs, num_unrollings, axis=0)
-
+    print(np.shape(split_outputs))
+    
     # When calculating the loss you need to be careful about the exact form, because you calculate
     # loss of all the unrolled steps at the same time
     # Therefore, take the mean error or each batch and get the sum of that over all the unrolled steps
@@ -210,7 +211,7 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
             for pred_i in range(n_predict_once):
 
               pred = session.run(sample_prediction, feed_dict=feed_dict)
-
+              
               our_predictions.append(np.asscalar(pred))
 
               feed_dict[sample_inputs] = np.asarray(pred).reshape(-1, 1)
