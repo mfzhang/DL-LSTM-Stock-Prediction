@@ -66,7 +66,6 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
     
     #all_outputs is output of regression layer
     all_outputs = tf.nn.xw_plus_b(all_lstm_outputs, w, b)
-    print(all_outputs.get_shape())
 
     #split_outputs is a list with 500 vectors of length 50 (batch = 500, num_unrollings = 50)
     split_outputs = tf.split(all_outputs, num_unrollings, axis=0)

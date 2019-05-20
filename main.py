@@ -50,7 +50,7 @@ pp_data.insert(1, pp_data_volume)
 
 # Define hyperparameters
 D = 2                      # Dimensionality of the data. Since our data is 1-D this would be 1
-num_unrollings = 50             # Number of time steps you look into the future.
+num_unrollings = 100             # Number of time steps you look into the future.
 batch_size = 500                # Number of samples in a batch
 num_nodes = [200, 200, 150]     # Number of hidden nodes in each layer of the deep LSTM stack we're using
 n_layers = len(num_nodes)       # number of layers
@@ -64,5 +64,5 @@ x_axis_seq, predictions_over_time = LSTM(pp_data, D, num_unrollings, batch_size,
 # =============================================================================
 
 # Visualisation
-best_prediction_epoch = 28     # Replace this with the epoch that you got the best results when running the plotting code
+best_prediction_epoch = 28    # Replace this with the epoch that you got the best results when running the plotting code
 prediction(df, pp_data, x_axis_seq, predictions_over_time, best_prediction_epoch)
