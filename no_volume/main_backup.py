@@ -7,10 +7,10 @@
         Based on a tutorial of Thushan Ganegedara (https://www.datacamp.com/community/tutorials/lstm-python-stock-market)
 '''
 
-from src.data_operations.import_as_dict import get_data
-from src.data_operations.preprocessing import PreProc
-from src.LSTM import LSTM
-from src.makeplots import prediction
+from data_operations_backup.import_as_dict_backup import get_data
+from data_operations_backup.preprocessing_backup import PreProc
+from LSTM_backup import LSTM
+from makeplots import prediction
 
 # =============================================================================
 # Preprocessing
@@ -28,28 +28,16 @@ df = stocks['PHIA']
 split_datapoint = 5000
 smoothing_window_size = 1000
 
-
-pp_data_price = PreProc(df, "Prices")
-pp_data_price.splitdata(split_datapoint)
-pp_data_price.normalize_smooth(smoothing_window_size, EMA=0.0, gamma=0.1)
-
-pp_data_volume = PreProc(df, "Volume")
-pp_data_volume.splitdata(split_datapoint)
-pp_data_volume.normalize_smooth(smoothing_window_size, EMA=0.0, gamma=0.1)
-
-
-pp_data = []
-pp_data.insert(0, pp_data_price)
-pp_data.insert(1, pp_data_volume)
-
-#pp_data = np.concatenate((pp_data_price, pp_data_volume), axis=0)
+pp_data = PreProc(df)
+pp_data.splitdata(split_datapoint)
+pp_data.normalize_smooth(smoothing_window_size, EMA=0.0, gamma=0.1)
 
 # =============================================================================
 # Define and apply LSTM
 # =============================================================================
 
 # Define hyperparameters
-D = 2                      # Dimensionality of the data. Since our data is 1-D this would be 1
+D = 1                           # Dimensionality of the data. Since our data is 1-D this would be 1
 num_unrollings = 50             # Number of time steps you look into the future.
 batch_size = 500                # Number of samples in a batch
 num_nodes = [200, 200, 150]     # Number of hidden nodes in each layer of the deep LSTM stack we're using
@@ -64,5 +52,5 @@ x_axis_seq, predictions_over_time = LSTM(pp_data, D, num_unrollings, batch_size,
 # =============================================================================
 
 # Visualisation
-best_prediction_epoch = 28     # Replace this with the epoch that you got the best results when running the plotting code
+best_prediction_epoch = 0      # Replace this with the epoch that you got the best results when running the plotting code
 prediction(df, pp_data, x_axis_seq, predictions_over_time, best_prediction_epoch)

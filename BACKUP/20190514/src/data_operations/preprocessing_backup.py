@@ -11,24 +11,17 @@ class PreProc(object):
     '''Preprocessing object
             TO BE COMPLETED
     '''
-    def __init__(self, df, col_name):
+    def __init__(self, df):
         self.df = df
-        self.col_name = col_name
+        self.high_prices = df.loc[:, 'High'].values
+        self.low_prices = df.loc[:, 'Low'].values
+        self.mid_prices = (self.high_prices+self.low_prices)/2.0
         self.scaler = MinMaxScaler()
         self.train_data = 0
         self.test_data = 0
         self.all_mid_data = 0
         self.split_datapoint = 0
-        
-        if col_name == "Prices":
-            self.high_prices = df.loc[:, 'High'].values
-            self.low_prices = df.loc[:, 'Low'].values
-            self.mid_prices = (self.high_prices+self.low_prices)/2.0
-           
-            
-        if col_name == "Volume":
-            self.mid_prices = df.loc[:, 'Volume'].values
-            
+
     def splitdata(self, split_datapoint):
         '''Method which splits test data and train data
         '''

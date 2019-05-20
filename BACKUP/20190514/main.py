@@ -7,10 +7,10 @@
         Based on a tutorial of Thushan Ganegedara (https://www.datacamp.com/community/tutorials/lstm-python-stock-market)
 '''
 
-from src.data_operations.import_as_dict import get_data
-from src.data_operations.preprocessing import PreProc
-from src.LSTM import LSTM
-from src.makeplots import prediction
+from BACKUP.20190514.src.data_operations.import_as_dict import get_data
+from BACKUP.20190514.src.data_operations.preprocessing import PreProc
+from BACKUP.20190514.src.LSTM import LSTM
+from BACKUP.20190514.src.makeplots import prediction
 
 # =============================================================================
 # Preprocessing

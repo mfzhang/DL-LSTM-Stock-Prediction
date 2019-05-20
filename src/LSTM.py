@@ -1,6 +1,12 @@
 '''LSTM
         TO BE COMPLETED
 '''
+#VOLUME MOET OOK PREDICTED WORDEN, DAAR ZIT NU DE ERROR
+#CHECK VARIABLE SAMPLE INPUT
+#CURRENT VOLUME COULD INTRODUCE ERRORS
+#dus ik denk dat je als output ook de volume moet hebben en ook de prijs, en dat is allebei gebasseerd op hele output
+
+
 
 import tensorflow as tf
 import numpy as np
@@ -10,6 +16,7 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
     '''LSTM definition
             TO BE COMPLETED
     '''
+    #if we do the optimization with the for loop im not sure if we should  include this
     tf.reset_default_graph() # This is important in case you run this multiple times
 
     # Input data.
@@ -19,7 +26,7 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
     for ui in range(num_unrollings):
         train_inputs.append(tf.placeholder(tf.float32, shape=[batch_size, D], \
                                            name='train_inputs_%d'%ui))
-        train_outputs.append(tf.placeholder(tf.float32, shape=[batch_size, 1], \
+        train_outputs.append(tf.placeholder(tf.float32, shape=[batch_size, D], \
                                             name='train_outputs_%d'%ui))
 
     lstm_cells = [
@@ -35,8 +42,8 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
     drop_multi_cell = tf.contrib.rnn.MultiRNNCell(drop_lstm_cells)
     multi_cell = tf.contrib.rnn.MultiRNNCell(lstm_cells)
 
-    w = tf.get_variable('w', shape=[num_nodes[-1], 1], initializer=tf.contrib.layers.xavier_initializer())
-    b = tf.get_variable('b', initializer=tf.random_uniform([1], -0.1, 0.1))
+    w = tf.get_variable('w', shape=[num_nodes[-1], 2], initializer=tf.contrib.layers.xavier_initializer())
+    b = tf.get_variable('b', initializer=tf.random_uniform([2], -0.1, 0.1))
 
     # Create cell state and hidden state variables to maintain the state of the LSTM
     c, h = [], []
@@ -54,23 +61,27 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
     all_lstm_outputs, state = tf.nn.dynamic_rnn(
         drop_multi_cell, all_inputs, initial_state=tuple(initial_state),
         time_major=True, dtype=tf.float32)
-
+    
     all_lstm_outputs = tf.reshape(all_lstm_outputs, [batch_size*num_unrollings, num_nodes[-1]])
-
+    
+    #all_outputs is output of regression layer
     all_outputs = tf.nn.xw_plus_b(all_lstm_outputs, w, b)
+    print(all_outputs.get_shape())
 
+    #split_outputs is a list with 500 vectors of length 50 (batch = 500, num_unrollings = 50)
     split_outputs = tf.split(all_outputs, num_unrollings, axis=0)
 
     # When calculating the loss you need to be careful about the exact form, because you calculate
     # loss of all the unrolled steps at the same time
     # Therefore, take the mean error or each batch and get the sum of that over all the unrolled steps
 
+    #with control dependencies, the loss will only be calculated if the states are first assigned
     print('Defining training Loss')
     loss = 0.0
     with tf.control_dependencies([tf.assign(c[li], state[li][0]) for li in range(n_layers)]+
                                  [tf.assign(h[li], state[li][1]) for li in range(n_layers)]):
       for ui in range(num_unrollings):
-        loss += tf.reduce_mean(0.5*(split_outputs[ui]-train_outputs[ui])**2)
+              loss += tf.reduce_mean(0.5*(split_outputs[ui]-train_outputs[ui])**2)
 
     print('Learning rate decay operations')
     global_step = tf.Variable(0, trainable=False)
@@ -111,6 +122,7 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
                                                      initial_state=tuple(initial_sample_state),
                                                      time_major=True,
                                                      dtype=tf.float32)
+  
 
     with tf.control_dependencies([tf.assign(sample_c[li], sample_state[li][0]) for li in range(n_layers)]+
                                  [tf.assign(sample_h[li], sample_state[li][1]) for li in range(n_layers)]):
@@ -123,7 +135,7 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
 
     n_predict_once = 50 # Number of steps you continously predict for
 
-    train_seq_length = pp_data.train_data.size # Full length of the training data
+    train_seq_length = pp_data[0].train_data.size # Full length of the training data
 
     train_mse_ot = [] # Accumulate Train losses
     test_mse_ot = [] # Accumulate Test loss
@@ -141,24 +153,37 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
     average_loss = 0
 
     # Define data generator
-    data_gen = DataGeneratorSeq(pp_data.train_data, batch_size, num_unrollings)
+    data_gen_prices = DataGeneratorSeq(pp_data[0].train_data, batch_size, num_unrollings)
+    data_gen_volume  = DataGeneratorSeq(pp_data[1].train_data, batch_size, num_unrollings)
+
 
     x_axis_seq = []
 
-    # Points you start our test predictions from
-    test_points_seq = np.arange(pp_data.split_datapoint, pp_data.all_mid_data.size-pp_data.all_mid_data.size%50, 50).tolist()    ############## np.arange(11000,12000,50).tolist()  CORRECT???
+    # Points you start our test predictions from, STAYS THE SAME since prices are tested
+    test_points_seq = np.arange(pp_data[0].split_datapoint, pp_data[0].all_mid_data.size-pp_data[0].all_mid_data.size%50, 50).tolist()    ############## np.arange(11000,12000,50).tolist()  CORRECT???
 
     for ep in range(epochs):
 
         # ========================= Training =====================================
+        #https://jonlabelle.com/snippets/view/markdown/python-enumerate-and-zip
+        #https://machinelearningmastery.com/how-to-develop-lstm-models-for-time-series-forecasting/
         for step in range(train_seq_length//batch_size):
 
-            u_data, u_labels = data_gen.unroll_batches()
+            u_data_prices, u_labels_prices = data_gen_prices.unroll_batches()
+            u_data_volume, u_labels_volume = data_gen_volume.unroll_batches()
+            
+            u_data = np.zeros([num_unrollings, batch_size, 2])
+            u_data[0:,0:,0] = u_data_prices
+            u_data[0:,0:,1] = u_data_volume
+            
+            u_labels = np.zeros([num_unrollings, batch_size, 2])
+            u_labels[0:,0:,0] = u_labels_prices
+            u_labels[0:,0:,1] = u_labels_volume
 
             feed_dict = {}
             for ui, (dat, lbl) in enumerate(zip(u_data, u_labels)):
-                feed_dict[train_inputs[ui]] = dat.reshape(-1, 1)
-                feed_dict[train_outputs[ui]] = lbl.reshape(-1, 1)
+                feed_dict[train_inputs[ui]] = dat.reshape(batch_size, D)
+                feed_dict[train_outputs[ui]] = lbl.reshape(batch_size, D)
 
             feed_dict.update({tf_learning_rate: 0.0001, tf_min_learning_rate:0.000001})
 
@@ -195,32 +220,38 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout):
             # Feed in the recent past behavior of stock prices
             # to make predictions from that point onwards
             for tr_i in range(w_i-num_unrollings+1, w_i-1):
-              current_price = pp_data.all_mid_data[tr_i]
-              feed_dict[sample_inputs] = np.array(current_price).reshape(1, 1)
+              current_price = pp_data[0].all_mid_data[tr_i]
+              current_volume = pp_data[1].all_mid_data[tr_i]
+              feed_dict[sample_inputs] = np.array([current_price, current_volume]).reshape(1, 2)
               _ = session.run(sample_prediction, feed_dict=feed_dict)
 
             feed_dict = {}
 
-            current_price = pp_data.all_mid_data[w_i-1]
+            current_price = pp_data[0].all_mid_data[w_i-1]
+            current_volume = pp_data[1].all_mid_data[w_i-1]
 
-            feed_dict[sample_inputs] = np.array(current_price).reshape(1, 1)
+            feed_dict[sample_inputs] = np.array([current_price, current_volume]).reshape(1, 2)
 
             # Make predictions for this many steps
-            # Each prediction uses previous prediciton as it's current input
+            # Each prediction uses previous prediction as it's current input
             for pred_i in range(n_predict_once):
 
               pred = session.run(sample_prediction, feed_dict=feed_dict)
+              pred.reshape(-1,1)
+              
+              our_predictions.append(np.asscalar(pred[0][0]))
+              
+              #add function that predict volume input!!!!
 
-              our_predictions.append(np.asscalar(pred))
-
-              feed_dict[sample_inputs] = np.asarray(pred).reshape(-1, 1)
+              feed_dict[sample_inputs] = np.asarray([pred[0][0], pred[0][1]]).reshape(1, 2)
 
               if (ep+1)-valid_summary == 0:
                 # Only calculate x_axis values in the first validation epoch
                 x_axis.append(w_i+pred_i)
 
-              mse_test_loss += 0.5*(pred-pp_data.all_mid_data[w_i+pred_i])**2
+              mse_test_loss += 0.5*(pred[0][0]-pp_data[0].all_mid_data[w_i+pred_i])**2
 
+            #after prediction is made, reset sample states
             session.run(reset_sample_states)
 
             predictions_seq.append(np.array(our_predictions))
