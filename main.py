@@ -67,13 +67,13 @@ dropout = 0.2                   # Dropout amount
 n_predict_once = 50
 #n_predict_once = 100
 #n_predict_once = 200
+
 # Run LSTM
 x_axis_seq, predictions_over_time, run_data = LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n_predict_once)
 
 # =============================================================================
 # Saving the results and finding the best epoch
 # =============================================================================
-
 
 best_prediction_epoch = 28      # Replace this with the epoch that you got the best results when running the plotting code
 #best_prediction_epoch = PerformanceSaver(pp_data, run_data, n_predict_once, num_unrollings, batch_size)
@@ -82,4 +82,4 @@ best_prediction_epoch = 28      # Replace this with the epoch that you got the b
 # Visualisation of the results
 # =============================================================================
 
-prediction(df, pp_data, x_axis_seq, predictions_over_time, best_prediction_epoch)
+plot = prediction(df, pp_data, x_axis_seq, predictions_over_time, best_prediction_epoch)

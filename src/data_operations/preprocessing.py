@@ -24,8 +24,7 @@ class PreProc(object):
             self.high_prices = df.loc[:, 'High'].values
             self.low_prices = df.loc[:, 'Low'].values
             self.mid_prices = (self.high_prices+self.low_prices)/2.0
-           
-            
+                
         if col_name == "Volume":
             self.mid_prices = df.loc[:, 'Volume'].values
             

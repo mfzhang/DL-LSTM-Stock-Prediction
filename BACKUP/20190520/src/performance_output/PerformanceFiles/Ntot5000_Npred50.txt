@@ -1,0 +1,35 @@
+Train data size =5000
+Num_unrolling = 50
+batch_size = 500
+n_predict_once = 50
+Best prediction epoch: 12 with MSE 0.0111
+Epoch nr 1, average loss= 6.53139, MSE= 0.37247
+Epoch nr 2, average loss= 0.99710, MSE= 0.04154
+Epoch nr 3, average loss= 0.26933, MSE= 0.03334
+Epoch nr 4, average loss= 0.16293, MSE= 0.04344
+Epoch nr 5, average loss= 0.14501, MSE= 0.03296
+Epoch nr 6, average loss= 0.13553, MSE= 0.02891
+Epoch nr 7, average loss= 0.12201, MSE= 0.02057
+Epoch nr 8, average loss= 0.11251, MSE= 0.02166
+Epoch nr 9, average loss= 0.11465, MSE= 0.01976
+Epoch nr 10, average loss= 0.11703, MSE= 0.02214
+Epoch nr 11, average loss= 0.10080, MSE= 0.01757
+Epoch nr 12, average loss= 0.09631, MSE= 0.01118
+Epoch nr 13, average loss= 0.08867, MSE= 0.01338
+Epoch nr 14, average loss= 0.08597, MSE= 0.01901
+Epoch nr 15, average loss= 0.08466, MSE= 0.01528
+Epoch nr 16, average loss= 0.08283, MSE= 0.01565
+Epoch nr 17, average loss= 0.07965, MSE= 0.01579
+Epoch nr 18, average loss= 0.08293, MSE= 0.01725
+Epoch nr 19, average loss= 0.08629, MSE= 0.02358
+Epoch nr 20, average loss= 0.08514, MSE= 0.02484
+Epoch nr 21, average loss= 0.07836, MSE= 0.01806
+Epoch nr 22, average loss= 0.08083, MSE= 0.02257
+Epoch nr 23, average loss= 0.07623, MSE= 0.02120
+Epoch nr 24, average loss= 0.07383, MSE= 0.01902
+Epoch nr 25, average loss= 0.07755, MSE= 0.02012
+Epoch nr 26, average loss= 0.07998, MSE= 0.02071
+Epoch nr 27, average loss= 0.07703, MSE= 0.02151
+Epoch nr 28, average loss= 0.07828, MSE= 0.02041
+Epoch nr 29, average loss= 0.08180, MSE= 0.01950
+Epoch nr 30, average loss= 0.08255, MSE= 0.02085
