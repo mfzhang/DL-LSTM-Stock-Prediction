@@ -75,8 +75,8 @@ x_axis_seq, predictions_over_time, run_data = LSTM(pp_data, D, num_unrollings, b
 # Saving the results and finding the best epoch
 # =============================================================================
 
-best_prediction_epoch = 28      # Replace this with the epoch that you got the best results when running the plotting code
-#best_prediction_epoch = PerformanceSaver(pp_data, run_data, n_predict_once, num_unrollings, batch_size)
+#best_prediction_epoch = 28      # Replace this with the epoch that you got the best results when running the plotting code
+best_prediction_epoch = PerformanceSaver(pp_data_price, run_data, n_predict_once, num_unrollings, batch_size)
 
 # =============================================================================
 # Visualisation of the results
