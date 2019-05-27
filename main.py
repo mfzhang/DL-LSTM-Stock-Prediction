@@ -69,7 +69,7 @@ n_predict_once = 50
 #n_predict_once = 200
 
 # Run LSTM
-x_axis_seq, predictions_over_time, run_data = LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n_predict_once)
+x_axis_seq, predictions_over_time, run_data, KPI = LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n_predict_once)
 
 # =============================================================================
 # Saving the results and finding the best epoch
