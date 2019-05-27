@@ -264,7 +264,7 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n
               pred.reshape(-1,1)
               
               our_predictions.append(np.asscalar(pred[0][0]))
-              mid_data.append(all_mid_data[w_i + pred_i])
+              mid_data.append(pp_data[0].all_mid_data[w_i + pred_i])
               
               #add function that predict volume input!!!!
 
@@ -275,8 +275,8 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n
                 x_axis.append(w_i+pred_i)
 
               mse_test_loss += 0.5*(pred[0][0]-pp_data[0].all_mid_data[w_i+pred_i])**2
-              mre_test_loss += abs((pred-all_mid_data[w_i+pred_i])/(all_mid_data[w_i+pred_i]))
-              mae_test_loss += abs(pred-all_mid_data[w_i+pred_i])
+              mre_test_loss += abs((pred[0][0]-pp_data[0].all_mid_data[w_i+pred_i])/(pp_data[0].all_mid_data[w_i+pred_i]))
+              mae_test_loss += abs(pred[0][0]-pp_data[0].all_mid_data[w_i+pred_i])
               ae_test_loss.append(mae_test_loss)
 
             #after prediction is made, reset sample states
@@ -340,5 +340,7 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n
           predictions_over_time.append(predictions_seq)
           print('\tFinished Predictions')
           data_for_output_perm = np.vstack((data_for_output_perm, data_for_output_temp))
+          
+          KPI = {'mse':test_mse_ot, 'lincor':test_lincor_ot, 'mre':test_mre_ot, 'rmse': test_rmse_ot,'mae':test_mae_ot, 'maxae':test_maxae_ot}
 
-    return x_axis_seq, predictions_over_time, data_for_output_perm
+    return x_axis_seq, predictions_over_time, data_for_output_perm, KPI
