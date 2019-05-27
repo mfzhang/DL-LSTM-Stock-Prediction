@@ -10,6 +10,7 @@
 
 import tensorflow as tf
 import numpy as np
+import math
 from src.data_operations.augmentation import DataGeneratorSeq
 
 def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n_predict_once):
@@ -139,6 +140,11 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n
 
     train_mse_ot = [] # Accumulate Train losses
     test_mse_ot = [] # Accumulate Test loss
+    test_rmse_ot = [] # Accumulate Test loss
+    test_mae_ot = []
+    test_mre_ot = []
+    test_lincor_ot = []
+    test_maxae_ot = []
     predictions_over_time = [] # Accumulate predictions
 
     session = tf.InteractiveSession()
@@ -212,7 +218,11 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n
           predictions_seq = []
 
           mse_test_loss_seq = []
-
+          lincor_seq = []
+          rmse_test_loss_seq = []
+          mre_test_loss_seq = []
+          mae_test_loss_seq = []
+          maxae_test_loss_seq = []
           # ============================ Saving the average loss ==============================
 
           data_for_output_temp = data_for_output_temp + ', average loss= ' +  str(average_loss)[:7]
@@ -220,6 +230,11 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n
           # ===================== Updating State and Making Predicitons ========================
           for w_i in test_points_seq:
             mse_test_loss = 0.0
+            mre_test_loss = 0.0
+            mae_test_loss = 0.0
+            ae_test_loss = []
+            rmse_test_loss = 0.0 
+            mid_data = []
             our_predictions = []
 
             if (ep+1)-valid_summary == 0:
@@ -249,6 +264,7 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n
               pred.reshape(-1,1)
               
               our_predictions.append(np.asscalar(pred[0][0]))
+              mid_data.append(pp_data[0].all_mid_data[w_i + pred_i])
               
               #add function that predict volume input!!!!
 
@@ -259,20 +275,47 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n
                 x_axis.append(w_i+pred_i)
 
               mse_test_loss += 0.5*(pred[0][0]-pp_data[0].all_mid_data[w_i+pred_i])**2
+              mre_test_loss += abs((pred[0][0]-pp_data[0].all_mid_data[w_i+pred_i])/(pp_data[0].all_mid_data[w_i+pred_i]))
+              mae_test_loss += abs(pred[0][0]-pp_data[0].all_mid_data[w_i+pred_i])
+              ae_test_loss.append(mae_test_loss)
 
             #after prediction is made, reset sample states
             session.run(reset_sample_states)
 
             predictions_seq.append(np.array(our_predictions))
-
+            
+            cov = np.cov(our_predictions,mid_data)
+            var_pred = np.var(our_predictions)
+            var_mid_data = np.var(mid_data)
+            lincor = cov/(math.sqrt(var_pred*var_mid_data))
+            
+            
             mse_test_loss /= n_predict_once
+            mre_test_loss /= n_predict_once
+            mae_test_loss /= n_predict_once
+            maxae_test_loss = max(ae_test_loss)
+            rmse_test_loss = math.sqrt(mse_test_loss)
+            
+            lincor_seq.append(lincor)
+            mre_test_loss_seq.append(mre_test_loss)
+            mae_test_loss_seq.append(mae_test_loss)
+            rmse_test_loss_seq.append(rmse_test_loss)
+            maxae_test_loss_seq.append(maxae_test_loss)
+            
             mse_test_loss_seq.append(mse_test_loss)
+            
 
             if (ep+1)-valid_summary == 0:
               x_axis_seq.append(x_axis)
 
           current_test_mse = np.mean(mse_test_loss_seq)
-
+          current_lincor = np.mean(lincor_seq)   
+          current_test_mse = np.mean(mse_test_loss_seq)
+          current_test_mre = np.mean(mre_test_loss_seq)
+          current_test_mae = np.mean(mae_test_loss_seq)
+          current_test_rmse = np.mean(rmse_test_loss_seq) #CHANGED
+          current_test_maxae = np.mean(maxae_test_loss_seq)
+          
           # Learning rate decay logic
           if len(test_mse_ot) > 0 and current_test_mse > min(test_mse_ot):
               loss_nondecrease_count += 1
@@ -286,12 +329,18 @@ def LSTM(pp_data, D, num_unrollings, batch_size, num_nodes, n_layers, dropout, n
 
 
           test_mse_ot.append(current_test_mse)
-
+          test_lincor_ot.append(current_lincor)  
+          test_mre_ot.append(current_test_mre)
+          test_rmse_ot.append(current_test_rmse)
+          test_mae_ot.append(current_test_mae)
+          test_maxae_ot.append(current_test_maxae)
           data_for_output_temp = data_for_output_temp + ', MSE= ' + str(np.mean(mse_test_loss_seq))[:7]
           test_mse_ot.append(current_test_mse)
           print('\tTest MSE: %.5f'%np.mean(mse_test_loss_seq))
           predictions_over_time.append(predictions_seq)
           print('\tFinished Predictions')
           data_for_output_perm = np.vstack((data_for_output_perm, data_for_output_temp))
+          
+          KPI = {'mse':test_mse_ot, 'lincor':test_lincor_ot, 'mre':test_mre_ot, 'rmse': test_rmse_ot,'mae':test_mae_ot, 'maxae':test_maxae_ot}
 
-    return x_axis_seq, predictions_over_time, data_for_output_perm
+    return x_axis_seq, predictions_over_time, data_for_output_perm, KPI
