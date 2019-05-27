@@ -3,7 +3,10 @@ The purpose of this project is to predict stock market values based on a Long Sh
 
 ## Requirements
 - Python 3
-- Several packages
+- pandas_datareader 
+- tensorflow
+- sklearn
+- mpl_finance
 
 ## Purpose of the project
 - Get new insights into deep learning.
