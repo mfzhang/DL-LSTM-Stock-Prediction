@@ -1,4 +1,4 @@
-# Deep Learning Project (TU Delft - CS4180)
+# Deep Learning Project (TU Delft: CS4180)
 The purpose of this project is to predict stock market values based on a Long Short-Term Memory (LSTM) deep learning model. Only based on previous stock data (no news events will be considered), this time series model will predict whether a certain stock will rise or fall in the near future. This algorithm could help traders during the decision when to buy, keep or sell their stocks. As basis, an existing algorithm will be used. This model will be extended using other input data and alternating the time series window. This way, we hope to achieve better results which can be used for longer periods of time (as we do not want to retrain our model every trading day).
 
 ## Requirements
