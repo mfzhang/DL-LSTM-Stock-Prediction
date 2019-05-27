@@ -4,7 +4,7 @@ The purpose of this project is to predict stock market values based on a Long Sh
 ## Requirements
 - Python 3
 - pandas_datareader 
-- tensorflow
+- tensorflow (preferably on GPU)
 - sklearn
 - mpl_finance
 
